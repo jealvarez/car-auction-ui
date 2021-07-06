@@ -1,0 +1,29 @@
+<h1>Get Stored Quotation</h1>
+
+<div *ngIf="showQuotations">
+  <ul>
+    <li *ngFor="let quotation of quotations">
+      <div class="sticky-note position-relative">
+        <div class="sicky-note-delete-button">
+          <a (click)="delete(quotation.id)" class="fa fa-window-close" style="cursor: pointer;"></a>
+        </div>
+        <h2>
+          <a target="_blank" href="{{ quotation.auctioneerUrl }}">{{ quotation.vehicle.make.name }} {{ quotation.vehicle.model.name }} {{ quotation.vehicle.year }}</a>
+        </h2>
+        <div class="container">
+          <div class="sticky-detail-container">
+            <span class="label">Auction Date:</span>
+            <span>{{ quotation.auctionDate | date: 'dd/MM/yyyy HH:mm' }}</span>
+          </div>
+          <div class="sticky-detail-container">
+            <span class="label">Quote Price:</span>
+            <span>{{ quotation.quoteFee.quotePrice | currency:'USD':'symbol':'1.2-2' }}</span>
+          </div>
+          <div class="sticky-detail-container price">
+            <span>{{ quotation.quoteFee.estimatedTotalCost | currency:'QTZ':'symbol':'1.2-2' }}</span>
+          </div>
+        </div>
+      </div>
+    </li>
+  </ul>
+</div>

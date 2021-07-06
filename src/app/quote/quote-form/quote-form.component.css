@@ -1,0 +1,71 @@
+.title {
+    padding-bottom: 1em;
+}
+
+.found-results {
+    border: 1px solid gray;
+    box-shadow: 0px 1px 3px black;
+    min-height: 10em;
+}
+
+.found-results>ul {
+    display: block;
+    padding: 0;
+    list-style: none;
+}
+
+.found-results>ul>li:hover {
+    background: lightblue;
+}
+
+.position-relative {
+    position: relative;
+}
+
+.position-absolute {
+    position: absolute;
+}
+
+.float-left {
+    float: left;
+}
+
+.float-right {
+    float: right;
+}
+
+.min-height-5 {
+    min-height: 5em;
+}
+
+.form {
+    width: 50%;
+}
+
+.form__price {
+    width: 100%
+}
+
+.form__vehicle-year {
+    width: 100%;
+}
+
+.form__auction-date-container {
+    width: 90%;
+}
+
+.form__auction-date {
+    width: 100%;
+}
+
+.form__auction-time {
+    width: 100%;
+}
+
+.form__auctioneer-url {
+    width: 100%;
+}
+
+.inline-block {
+    display: inline-block;
+}

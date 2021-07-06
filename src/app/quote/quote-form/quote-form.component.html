@@ -1,0 +1,181 @@
+<h1 class="title">Get Quotation</h1>
+
+<div class="form">
+  <form [formGroup]="quoteGroupForm" (ngSubmit)="onSubmit()" autocomplete="off">
+    <div class="form-group form__price">
+      <mat-form-field class="form__price">
+        <input matInput onlyNumber="true" formControlName="price" type="text" id="price" placeholder="Price">
+      </mat-form-field>
+    </div>
+    <div class="form-group">
+      <ng-select [items]="vehicleSubtypes" bindLabel="name" placeholder="Select Vehicle Subtype" (change)="onVehicleSubtypeChanged($event)"
+        formControlName="vehicleSubtype"></ng-select>
+    </div>
+    <div class="form-group">
+      <ng-select [items]="cranes" bindLabel="name" placeholder="Select Crane" formControlName="craneFromCity">
+      </ng-select>
+    </div>
+    <div class="form-group">
+      <button [disabled]="!quoteGroupForm.valid" type="submit" class="btn btn-outline-primary">Get Quote</button>
+      <button (click)="clearQuotation()" type="button" class="btn btn-outline-dark">Clear</button>
+      <button *ngIf="showQuoteFee" [disabled]="!quoteGroupForm.valid" (click)="loadVehicleTypes()" type="button" class="btn btn-outline-success"
+        data-toggle="modal" data-target="#save-quotation" data-whatever="@mdo">Save Quotation</button>
+    </div>
+  </form>
+</div>
+<div *ngIf="showQuoteFee">
+  <!-- Total Fees -->
+  <div>
+    <h2 class="alert alert-danger">Total: {{ quoteFee.estimatedTotalCost | currency:'QTZ':'symbol':'1.2-2' }}</h2>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <!-- Foreign Fees -->
+      <div class="card border-success">
+        <div class="card-header bg-success text-white">
+          <h2 class="card-title">Foreign Fees</h2>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <th>Expense</th>
+                <th>Amount ($)</th>
+              </thead>
+              <tr>
+                <td>Vehicle Price</td>
+                <td>{{ quoteFee.quotePrice }}</td>
+              </tr>
+              <tr>
+                <td>Sale Fee</td>
+                <td>{{ quoteFee.saleFee.fee }}</td>
+              </tr>
+              <tr *ngFor="let foreignFixedFee of quoteFee.foreignFixedFees">
+                <td>{{ foreignFixedFee.name }}</td>
+                <td>{{ foreignFixedFee.fee }}</td>
+              </tr>
+              <tr>
+                <td>Internet Fee</td>
+                <td>{{ quoteFee.internetFee.fee }}</td>
+              </tr>
+              <tr>
+                <td>Freight Fee</td>
+                <td>{{ quoteFee.freightFee.fee }}</td>
+              </tr>
+              <tr>
+                <td>Freight Custom Fee</td>
+                <td>{{ quoteFee.freightFee.customFee }}</td>
+              </tr>
+              <tr>
+                <td>Crane Fee</td>
+                <td>{{ quoteFee.foreignCraneFee.fee }}</td>
+              </tr>
+            </table>
+          </div>
+          <div>
+            <h3 class="alert alert-success">Foreign Currency: {{ quoteFee.estimatedTotalForeignCost | currency:'USD':'symbol':'1.2-2' }}</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <!-- Local Fees -->
+      <div class="card border-primary">
+        <div class="card-header bg-primary text-white">
+          <h2 class="card-title">Local Fees</h2>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <th>Expense</th>
+                <th>Amount (Q)</th>
+              </thead>
+              <tr *ngFor="let localFixedFee of quoteFee.localFixedFees">
+                <td>{{ localFixedFee.name }}</td>
+                <td>{{ localFixedFee.fee }}</td>
+              </tr>
+              <tr>
+                <td>Crane Fee</td>
+                <td>{{ quoteFee.localCraneFee.fee }}</td>
+              </tr>
+              <tr>
+                <td>Custom Fee</td>
+                <td>{{ quoteFee.customFee.fee }}</td>
+              </tr>
+            </table>
+          </div>
+          <div>
+            <h3 class="alert alert-info">Local Currency: {{ quoteFee.estimatedTotalLocalCost | currency:'QTZ':'symbol':'1.2-2' }}</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="save-quotation" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Quotation</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="quotationSaveGroupForm" class="container" autocomplete="off">
+          <div class="form-group">
+            <ng-select [items]="vehicleTypes" bindLabel="name" placeholder="Select Vehicle Type" (change)="onVehicleTypeChange($event)"
+              formControlName="vehicleType"></ng-select>
+          </div>
+          <div class="form-group">
+            <ng-select [items]="vehicleMakes" bindLabel="name" placeholder="Select Vehicle Make" (change)="onVehicleMakeChange($event)"
+              formControlName="vehicleMake"></ng-select>
+          </div>
+          <div class="form-group">
+            <ng-select [items]="vehicleSubtypes" bindLabel="name" placeholder="Select Vehicle Subtype" (change)="onVehicleSubtypeChange($event)"
+              formControlName="vehicleSubtype"></ng-select>
+          </div>
+          <div class="form-group">
+            <ng-select [items]="vehicleModels" bindLabel="name" placeholder="Select Vehicle Model" formControlName="vehicleModel"></ng-select>
+          </div>
+          <div class="form-group">
+            <mat-form-field class="form__vehicle-year">
+              <input matInput onlyNumber="true" formControlName="vehicleYear" type="text" id="vehicle-year" placeholder="Vehicle Year">
+            </mat-form-field>
+          </div>
+          <div class="form-group min-height-5">
+            <div class="float-left form__auction-date-container">
+              <mat-form-field class="form__auction-date">
+                <input matInput formControlName="auctionDate" [matDatepicker]="auctionDatepicker" id="auction-date" placeholder="Auction Date"
+                  class="form__auction-date">
+              </mat-form-field>
+            </div>
+            <div class="float-rigth">
+              <mat-datepicker-toggle [for]="auctionDatepicker"></mat-datepicker-toggle>
+              <mat-datepicker #auctionDatepicker></mat-datepicker>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="input-group clockpicker">
+              <mat-form-field class="form__auction-time">
+                <input matInput time-picker formControlName="auctionTime" type="text" id="auction-time" placeholder="Auction Time">
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="form-group">
+            <mat-form-field class="form__auctioneer-url">
+              <input matInput formControlName="auctioneerUrl" type="text" id="auctioneer-url" placeholder="Auctioneer Url">
+            </mat-form-field>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" data-dismiss="modal">Close</button>
+        <button [disabled]="!quotationSaveGroupForm.valid" (click)="saveQuotation()" type="button" class="btn btn-outline-primary"
+          data-dismiss="modal">Ok</button>
+      </div>
+    </div>
+  </div>
+</div>
